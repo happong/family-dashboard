@@ -7,11 +7,6 @@ const firebaseConfig = {
   appId: "1:543109371218:web:789a2dd557067badf9d68b"
 };
 
-const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-};
 
 // 접속을 허용할 가족 구성원의 Google 계정 이메일
 const ALLOWED_EMAILS = [
