@@ -1,1 +1,134 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>우리집 다이어리</title>
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ===================== 로그인 화면 ===================== -->
+<div id="login-screen" class="login-screen">
+  <div class="login-card">
+    <p class="login-eyebrow">FAMILY DIARY</p>
+    <h1 class="login-title">우리집 다이어리</h1>
+    <p class="login-desc">허락된 가족만 들어올 수 있어요.</p>
+    <button id="google-login-btn" class="btn-google">
+      <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
+        <path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.92c1.7-1.57 2.68-3.88 2.68-6.62z"/>
+        <path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.92-2.26c-.81.54-1.85.86-3.04.86-2.34 0-4.32-1.58-5.03-3.7H.95v2.33A9 9 0 0 0 9 18z"/>
+        <path fill="#FBBC05" d="M3.97 10.72A5.4 5.4 0 0 1 3.68 9c0-.6.1-1.19.29-1.72V4.95H.95A9 9 0 0 0 0 9c0 1.45.35 2.83.95 4.05l3.02-2.33z"/>
+        <path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.58C13.46.9 11.43 0 9 0A9 9 0 0 0 .95 4.95l3.02 2.33C4.68 5.16 6.66 3.58 9 3.58z"/>
+      </svg>
+      Google로 로그인
+    </button>
+    <p id="login-error" class="login-error" hidden></p>
+  </div>
+</div>
+
+<!-- ===================== 앱 본체 (로그인 후 표시) ===================== -->
+<div id="app" class="app" hidden>
+
+  <header class="app-header">
+    <div class="header-left">
+      <p class="header-eyebrow">FAMILY DIARY</p>
+      <h1 class="header-title">우리집 다이어리</h1>
+    </div>
+    <div class="header-right">
+      <span id="user-name" class="user-name"></span>
+      <img id="user-photo" class="user-photo" alt="" />
+      <button id="logout-btn" class="btn-text">로그아웃</button>
+    </div>
+  </header>
+
+  <!-- 바인더 탭 네비게이션 -->
+  <nav class="tab-nav" aria-label="주요 메뉴">
+    <button class="tab" data-view="home" aria-current="page">
+      <span class="tab-index">00</span>홈
+    </button>
+    <button class="tab" data-view="finance">
+      <span class="tab-index">01</span>계모임
+    </button>
+    <button class="tab" data-view="travel">
+      <span class="tab-index">02</span>여행
+    </button>
+    <button class="tab" data-view="meeting">
+      <span class="tab-index">03</span>가족회의
+    </button>
+    <button class="tab" data-view="alerts">
+      <span class="tab-index">04</span>알림
+    </button>
+  </nav>
+
+  <main class="app-main">
+
+    <!-- 홈 -->
+    <section id="view-home" class="view" data-view="home">
+      <p class="view-eyebrow">오늘의 우리집</p>
+      <h2 class="view-title">한눈에 보기</h2>
+
+      <div class="summary-grid">
+        <article class="summary-card" data-accent="finance">
+          <p class="summary-label">계모임 최근 내역</p>
+          <p class="summary-value">준비 중</p>
+          <p class="summary-sub">모듈을 아직 만들지 않았어요</p>
+        </article>
+        <article class="summary-card" data-accent="travel">
+          <p class="summary-label">다음 여행</p>
+          <p class="summary-value">준비 중</p>
+          <p class="summary-sub">모듈을 아직 만들지 않았어요</p>
+        </article>
+        <article class="summary-card" data-accent="meeting">
+          <p class="summary-label">다음 가족회의 아젠다</p>
+          <p class="summary-value">준비 중</p>
+          <p class="summary-sub">모듈을 아직 만들지 않았어요</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- 계모임 (스켈레톤) -->
+    <section id="view-finance" class="view" data-view="finance" hidden>
+      <p class="view-eyebrow">가족 계모임</p>
+      <h2 class="view-title">수입 · 지출 · 기여도</h2>
+      <p class="placeholder-note">이 화면은 다음 단계에서 실제로 채울 예정이에요.</p>
+    </section>
+
+    <!-- 여행 (스켈레톤) -->
+    <section id="view-travel" class="view" data-view="travel" hidden>
+      <p class="view-eyebrow">가족 여행</p>
+      <h2 class="view-title">계획 · 기록 · 평점</h2>
+      <p class="placeholder-note">이 화면은 다음 단계에서 실제로 채울 예정이에요.</p>
+    </section>
+
+    <!-- 가족회의 (스켈레톤) -->
+    <section id="view-meeting" class="view" data-view="meeting" hidden>
+      <p class="view-eyebrow">가족 회의</p>
+      <h2 class="view-title">문제 · 논의 · 진행도</h2>
+      <p class="placeholder-note">이 화면은 다음 단계에서 실제로 채울 예정이에요.</p>
+    </section>
+
+    <!-- 알림 (스켈레톤) -->
+    <section id="view-alerts" class="view" data-view="alerts" hidden>
+      <p class="view-eyebrow">알림 설정</p>
+      <h2 class="view-title">할 일 · 일정 알림</h2>
+      <p class="placeholder-note">이 화면은 다음 단계에서 실제로 채울 예정이에요.</p>
+    </section>
+
+  </main>
+</div>
+
+<!-- Firebase (compat SDK — 초보자용, 설정 쉬움) -->
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-auth-compat.js"></script>
+
+<script src="config.js"></script>
+<script src="auth.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
