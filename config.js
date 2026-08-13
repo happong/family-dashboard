@@ -1,12 +1,20 @@
-/* =========================================================
-   여기에 본인의 Firebase 프로젝트 값을 채워넣으세요.
-   Firebase Console > 프로젝트 설정 > 일반 > 내 앱 에서 확인 가능합니다.
-   ⚠️ apiKey는 "비밀키"가 아니라 프로젝트 식별용 공개 값이라
-      GitHub에 올려도 되지만, 실제 접근 제어는 아래
-      ALLOWED_EMAILS만으로는 100% 안전하지 않습니다.
-      (자세한 내용은 README.md의 "보안 관련 주의" 참고)
-   ========================================================= */
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
 
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyAcNmjEguHoCH_ltxwfObYNNs8A3D1dYQw",
+  authDomain: "family-dashboard-5cf14.firebaseapp.com",
+  projectId: "family-dashboard-5cf14",
+  storageBucket: "family-dashboard-5cf14.firebasestorage.app",
+  messagingSenderId: "543109371218",
+  appId: "1:543109371218:web:789a2dd557067badf9d68b"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
 const firebaseConfig = {
   apiKey: "YOUR_API_KEY",
   authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
