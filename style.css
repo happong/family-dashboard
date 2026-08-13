@@ -435,6 +435,378 @@ button {
   .finance-grid { grid-template-columns: 1fr; }
 }
 
+/* ---------- 여행 모듈 ---------- */
+.travel-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 24px;
+  margin-top: 8px;
+}
+
+.trip-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.trip-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  text-align: left;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.trip-card:hover { background: var(--surface-alt); }
+.trip-card.is-selected {
+  border-color: var(--accent-travel);
+  background: #F3F5EF;
+}
+
+.trip-status {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--surface-alt);
+  color: var(--ink-soft);
+}
+.trip-status[data-status="완료"] { color: var(--accent-travel); background: #EEF1E9; }
+
+.trip-name { font-weight: 600; }
+.trip-dates {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  color: var(--ink-faint);
+}
+
+.itinerary-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.itinerary-col-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink-soft);
+  margin: 0 0 8px;
+  padding-bottom: 6px;
+  border-bottom: 2px solid var(--border);
+}
+.itinerary-col-title[data-kind="사전계획"] { border-bottom-color: var(--accent-alerts); }
+.itinerary-col-title[data-kind="실제일정"] { border-bottom-color: var(--accent-travel); }
+
+.itinerary-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.itinerary-row {
+  display: flex;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+}
+
+.itinerary-row-time {
+  display: flex;
+  flex-direction: column;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--ink-faint);
+  flex-shrink: 0;
+  min-width: 40px;
+}
+
+.itinerary-time { color: var(--ink-soft); }
+
+.itinerary-row-main {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.itinerary-place { font-weight: 600; font-size: 13px; }
+.itinerary-note {
+  font-size: 12px;
+  color: var(--ink-faint);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.itinerary-form { max-width: 420px; }
+
+@media (max-width: 720px) {
+  .travel-grid { grid-template-columns: 1fr; }
+  .itinerary-columns { grid-template-columns: 1fr; }
+}
+
+/* ---------- 공통 구분선 ---------- */
+.divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 24px 0;
+}
+
+/* ---------- 여행: 맛집/별점/사진 ---------- */
+.trip-rating-summary {
+  font-size: 20px;
+  color: var(--accent-travel);
+  margin: 0 0 12px;
+}
+.trip-rating-num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 14px;
+  color: var(--ink-soft);
+}
+
+.restaurant-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.restaurant-card {
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+}
+
+.restaurant-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.restaurant-name { font-weight: 600; }
+.restaurant-rating {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  color: var(--accent-meeting);
+}
+.restaurant-menu, .restaurant-revisit {
+  font-size: 12px;
+  color: var(--ink-soft);
+  margin: 4px 0 0;
+}
+
+.photo-count {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--ink-faint);
+  margin-left: 8px;
+}
+.photo-count.is-over { color: var(--accent-meeting); }
+
+.photo-hint { margin-bottom: 12px; }
+
+.photo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.photo-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  text-decoration: none;
+  color: var(--ink);
+  font-size: 12px;
+}
+.photo-item:hover { background: var(--surface-alt); }
+.photo-type { font-size: 20px; }
+
+/* ---------- 가족회의 ---------- */
+.meeting-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 24px;
+  margin-top: 8px;
+}
+
+.issue-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.issue-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  text-align: left;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.issue-card:hover { background: var(--surface-alt); }
+.issue-card.is-selected {
+  border-color: var(--accent-meeting);
+  background: #FBF1EE;
+}
+
+.issue-title { font-weight: 600; }
+.issue-desc { font-size: 12px; color: var(--ink-faint); }
+
+.issue-progress-track {
+  width: 100%;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--surface-alt);
+  overflow: hidden;
+}
+.issue-progress-fill {
+  display: block;
+  height: 100%;
+  background: var(--accent-meeting);
+  border-radius: 999px;
+}
+.issue-progress-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--ink-faint);
+}
+
+.progress-history {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+.progress-log-row {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  font-size: 13px;
+}
+.progress-log-date { color: var(--ink-faint); font-family: 'IBM Plex Mono', monospace; font-size: 11px; }
+.progress-log-value { font-weight: 700; color: var(--accent-meeting); }
+.progress-log-note { color: var(--ink-soft); }
+
+.discussion-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.discussion-row {
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+}
+.discussion-date {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--ink-faint);
+  margin: 0 0 4px;
+}
+.discussion-content { margin: 0; font-size: 14px; }
+.discussion-next {
+  margin: 6px 0 0;
+  font-size: 12px;
+  color: var(--accent-finance);
+}
+
+.todo-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.todo-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+}
+.todo-row.is-done { opacity: 0.55; }
+.todo-row-main { display: flex; flex-wrap: wrap; gap: 8px; align-items: baseline; }
+.todo-assignee {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--surface-alt);
+  color: var(--ink-soft);
+}
+.todo-content { font-size: 14px; }
+.todo-due { font-size: 11px; color: var(--accent-meeting); }
+.todo-done-badge {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent-travel);
+}
+.todo-complete-btn { font-size: 12px; flex-shrink: 0; }
+
+@media (max-width: 720px) {
+  .meeting-grid { grid-template-columns: 1fr; }
+}
+
+/* ---------- 알림 ---------- */
+.notif-toggle-btn { margin-bottom: 4px; }
+
+.upcoming-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.upcoming-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+}
+.upcoming-tag {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--surface-alt);
+  color: var(--ink-soft);
+  flex-shrink: 0;
+}
+.upcoming-tag[data-type="여행"] { color: var(--accent-travel); background: #EEF1E9; }
+.upcoming-tag[data-type="할일"] { color: var(--accent-meeting); background: #F6E9E5; }
+.upcoming-label { flex: 1; font-size: 13px; }
+.upcoming-date {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  color: var(--ink-faint);
+}
+
 /* ---------- 반응형 ---------- */
 @media (max-width: 640px) {
   .app-header { flex-direction: column; align-items: flex-start; gap: 12px; }
