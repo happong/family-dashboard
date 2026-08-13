@@ -1,1 +1,286 @@
 
+/* =========================================================
+   우리집 다이어리 — 디자인 토큰
+   팔레트: 따뜻한 아이보리 배경 + 호두색 포인트 + 세이지(여행) + 로즈(회의)
+   타이포: 제목 Noto Serif KR / 본문 Pretendard / 숫자 IBM Plex Mono
+   시그니처: 바인더 인덱스 탭 — 실물 가족 다이어리 느낌
+   ========================================================= */
+
+:root {
+  --bg: #FAF6F0;
+  --surface: #FFFFFF;
+  --surface-alt: #F1E9DC;
+  --border: #E4D9C7;
+
+  --ink: #2A2420;
+  --ink-soft: #746A5E;
+  --ink-faint: #A69C8E;
+
+  --accent-finance: #8B6F47;   /* 호두색 — 계모임 */
+  --accent-travel: #7E8B6E;    /* 세이지 — 여행 */
+  --accent-meeting: #B07A68;   /* 로즈클레이 — 가족회의 */
+  --accent-alerts: #6E7C8B;    /* 슬레이트블루 — 알림 */
+
+  --radius: 14px;
+  --shadow: 0 1px 2px rgba(42,36,32,0.04), 0 6px 20px rgba(42,36,32,0.06);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2 { font-family: 'Noto Serif KR', serif; margin: 0; }
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+/* ---------- 로그인 화면 ---------- */
+.login-screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(139,111,71,0.06), transparent 40%),
+    radial-gradient(circle at 80% 80%, rgba(126,139,110,0.06), transparent 40%),
+    var(--bg);
+}
+
+.login-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 40px 32px;
+  max-width: 360px;
+  width: 100%;
+  text-align: center;
+}
+
+.login-eyebrow {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  color: var(--ink-faint);
+  margin: 0 0 8px;
+}
+
+.login-title {
+  font-size: 26px;
+  margin-bottom: 10px;
+}
+
+.login-desc {
+  color: var(--ink-soft);
+  font-size: 14px;
+  margin: 0 0 28px;
+}
+
+.btn-google {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+.btn-google:hover { background: var(--surface-alt); transform: translateY(-1px); }
+
+.login-error {
+  margin-top: 16px;
+  font-size: 13px;
+  color: #A64C3F;
+}
+
+/* ---------- 앱 헤더 ---------- */
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding: 28px 24px 16px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.header-eyebrow {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  color: var(--ink-faint);
+  margin: 0 0 4px;
+}
+
+.header-title { font-size: 24px; }
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.user-name { font-size: 13px; color: var(--ink-soft); }
+
+.user-photo {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  object-fit: cover;
+}
+
+.btn-text {
+  font-size: 13px;
+  color: var(--ink-soft);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.btn-text:hover { color: var(--ink); }
+
+/* ---------- 바인더 인덱스 탭 (시그니처 요소) ---------- */
+.tab-nav {
+  display: flex;
+  gap: 6px;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 24px;
+  overflow-x: auto;
+}
+
+.tab {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px 12px;
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-bottom: none;
+  border-radius: 10px 10px 0 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  position: relative;
+  top: 1px;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.tab-index {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--ink-faint);
+}
+
+.tab[aria-current="page"] {
+  background: var(--surface);
+  color: var(--ink);
+  border-color: var(--border);
+  box-shadow: 0 -2px 6px rgba(42,36,32,0.04);
+}
+
+.tab:hover:not([aria-current="page"]) {
+  background: #ECE2D2;
+}
+
+/* ---------- 본문 ---------- */
+.app-main {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 24px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 0 12px 12px 12px;
+  min-height: 60vh;
+}
+
+.view-eyebrow {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--ink-faint);
+  margin: 0 0 6px;
+}
+
+.view-title {
+  font-size: 22px;
+  margin-bottom: 24px;
+}
+
+.placeholder-note {
+  color: var(--ink-soft);
+  font-size: 14px;
+  padding: 20px;
+  background: var(--surface-alt);
+  border-radius: var(--radius);
+  border: 1px dashed var(--border);
+}
+
+/* ---------- 홈 요약 카드 ---------- */
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+}
+
+.summary-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--ink-faint);
+  border-radius: 10px;
+  padding: 18px;
+}
+
+.summary-card[data-accent="finance"] { border-left-color: var(--accent-finance); }
+.summary-card[data-accent="travel"]  { border-left-color: var(--accent-travel); }
+.summary-card[data-accent="meeting"] { border-left-color: var(--accent-meeting); }
+
+.summary-label {
+  font-size: 12px;
+  color: var(--ink-soft);
+  margin: 0 0 8px;
+}
+
+.summary-value {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 18px;
+  margin: 0 0 4px;
+}
+
+.summary-sub {
+  font-size: 12px;
+  color: var(--ink-faint);
+  margin: 0;
+}
+
+/* ---------- 반응형 ---------- */
+@media (max-width: 640px) {
+  .app-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .tab { padding: 8px 12px 10px; font-size: 13px; }
+}
+
+/* 키보드 포커스 표시 */
+:focus-visible {
+  outline: 2px solid var(--accent-finance);
+  outline-offset: 2px;
+}
+
+/* 모션 최소화 선호 시 */
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}
