@@ -1,165 +1,136 @@
 /* =========================================================
-   가족 계모임 모듈
-   - Apps Script 웹앱에서 거래내역을 불러와 표시
-   - 새 내역 등록 (수입/지출)
-   - 기여도 = 각 등록자의 누적 수입 / 전체 수입 총합 * 100
-     (계모임에 얼마나 "보탰는지"를 보여주는 값으로 정의했습니다.
-      다른 기준으로 바꾸고 싶으면 calcContribution() 함수만 고치면 됩니다.)
+   가족 대시보드 백엔드 (Google Apps Script) — 범용 버전 v2
+
+   여러 모듈을 하나의 스프레드시트, 여러 시트 탭으로 관리합니다.
+   type 파라미터로 어떤 시트를 다룰지 구분합니다.
+
+   [스프레드시트에 필요한 시트 탭 & 헤더]
+   1) "거래내역"      : 날짜 | 구분 | 항목 | 금액 | 등록자 | 메모
+   2) "여행"          : 여행ID | 여행지 | 시작일 | 종료일 | 상태 | 메모
+   3) "일정"          : 여행ID | 구분 | 날짜 | 시간 | 장소 | 메모  (구분=사전계획/실제일정)
+   4) "맛집"          : 여행ID | 상점명 | 메뉴 | 별점 | 등록자 | 재방문의사 | 메모  (재방문의사=예/아니오)
+   5) "여행평점"      : 여행ID | 등록자 | 별점 | 메모
+   6) "사진"          : 여행ID | URL | 설명 | 유형  (유형=사진/동영상)
+   7) "회의이슈"      : 이슈ID | 제목 | 설명 | 등록일
+   8) "회의진행도"    : 이슈ID | 날짜 | 진행도 | 메모  (진행도=0~100 숫자, 최신 값이 현재 진행도)
+   9) "회의논의"      : 이슈ID | 날짜 | 논의내용 | 다음아젠다
+   10) "회의할일"     : 할일ID | 이슈ID | 담당자 | 내용 | 마감일 | 등록일
+   11) "회의할일완료" : 할일ID | 완료일
+
+   [설치/업데이트 방법]
+   - 이미 배포하신 경우: Apps Script 편집기에서 기존 코드를 이 내용으로
+     통째로 교체 → 배포 > 배포 관리 > 편집(연필 아이콘) > 새 버전으로 배포
+     (이렇게 하면 기존 웹앱 URL이 그대로 유지됩니다. "새 배포"를 새로
+     만들면 URL이 바뀌니 주의하세요.)
+
+   ⚠️ 보안 주의: "전체 허용"이어도 URL을 아는 사람만 접근 가능하지만,
+   URL 자체를 비밀번호처럼 생각하면 안 됩니다. 실제 접근 제어는
+   프론트엔드의 Google 로그인 화이트리스트가 담당합니다.
    ========================================================= */
 
-// ⚠️ 여기에 본인의 Apps Script 웹 앱 URL을 붙여넣으세요.
-const FINANCE_API_URL = 'YOUR_APPS_SCRIPT_WEB_APP_URL';
+const SHEET_MAP = {
+  finance: '거래내역',
+  trips: '여행',
+  itinerary: '일정',
+  restaurants: '맛집',
+  tripRatings: '여행평점',
+  photos: '사진',
+  issues: '회의이슈',
+  progress: '회의진행도',
+  discussions: '회의논의',
+  todos: '회의할일',
+  todoCompletions: '회의할일완료'
+};
 
-let financeRows = [];
+// type별로 "무슨 컬럼 기준으로 필터링할 수 있는지" 정의
+// 프론트에서 ?filterId=값 을 붙이면 해당 컬럼이 값과 일치하는 행만 반환
+const FILTER_COLUMN = {
+  itinerary: '여행ID',
+  restaurants: '여행ID',
+  tripRatings: '여행ID',
+  photos: '여행ID',
+  discussions: '이슈ID',
+  progress: '이슈ID',
+  todos: '이슈ID'
+};
 
-async function loadFinance() {
-  const listEl = document.getElementById('finance-list');
-  const statusEl = document.getElementById('finance-status');
-  statusEl.textContent = '불러오는 중...';
+function doGet(e) {
+  const type = e.parameter.type || 'finance';
+  const sheetName = SHEET_MAP[type];
+  if (!sheetName) return jsonOut({ ok: false, error: `알 수 없는 type: ${type}` });
 
-  if (FINANCE_API_URL.startsWith('YOUR_')) {
-    statusEl.textContent = 'API_URL이 아직 설정되지 않았어요 (modules/finance.js 상단 확인)';
-    return;
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(sheetName);
+  if (!sheet) return jsonOut({ ok: false, error: `시트 "${sheetName}"를 찾을 수 없습니다.` });
+
+  let rows = sheetToObjects(sheet);
+
+  const filterColumn = FILTER_COLUMN[type];
+  if (filterColumn && e.parameter.filterId) {
+    rows = rows.filter(r => String(r[filterColumn]) === String(e.parameter.filterId));
   }
 
-  try {
-    const res = await fetch(FINANCE_API_URL);
-    const data = await res.json();
-    if (!data.ok) throw new Error(data.error || '불러오기 실패');
-
-    financeRows = data.rows;
-    renderFinanceSummary(financeRows);
-    renderFinanceList(financeRows);
-    renderContribution(financeRows);
-    statusEl.textContent = '';
-  } catch (err) {
-    statusEl.textContent = '불러오는 데 실패했어요: ' + err.message;
-  }
+  return jsonOut({ ok: true, rows });
 }
 
-function renderFinanceSummary(rows) {
-  const income = rows.filter(r => r['구분'] === '수입').reduce((sum, r) => sum + Number(r['금액']), 0);
-  const expense = rows.filter(r => r['구분'] === '지출').reduce((sum, r) => sum + Number(r['금액']), 0);
-  const balance = income - expense;
+function doPost(e) {
+  const data = JSON.parse(e.postData.contents);
+  const type = data.type || 'finance';
+  const sheetName = SHEET_MAP[type];
+  if (!sheetName) return jsonOut({ ok: false, error: `알 수 없는 type: ${type}` });
 
-  document.getElementById('finance-income').textContent = formatWon(income);
-  document.getElementById('finance-expense').textContent = formatWon(expense);
-  document.getElementById('finance-balance').textContent = formatWon(balance);
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(sheetName);
+  if (!sheet) return jsonOut({ ok: false, error: `시트 "${sheetName}"를 찾을 수 없습니다.` });
+
+  const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+  const row = headers.map(h => (data[h] !== undefined ? data[h] : ''));
+  sheet.appendRow(row);
+
+  return jsonOut({ ok: true });
 }
 
-function renderFinanceList(rows) {
-  const listEl = document.getElementById('finance-list');
-  if (rows.length === 0) {
-    listEl.innerHTML = '<p class="placeholder-note">아직 등록된 내역이 없어요.</p>';
-    return;
-  }
-
-  const sorted = [...rows].sort((a, b) => new Date(b['날짜']) - new Date(a['날짜']));
-
-  listEl.innerHTML = sorted.map(r => `
-    <div class="finance-row" data-type="${r['구분']}">
-      <div class="finance-row-main">
-        <span class="finance-tag" data-type="${r['구분']}">${r['구분']}</span>
-        <span class="finance-item">${escapeHtml(r['항목'])}</span>
-        <span class="finance-note">${escapeHtml(r['메모'] || '')}</span>
-      </div>
-      <div class="finance-row-side">
-        <span class="finance-amount" data-type="${r['구분']}">${r['구분'] === '지출' ? '-' : '+'}${formatWon(r['금액'])}</span>
-        <span class="finance-meta">${formatDate(r['날짜'])} · ${escapeHtml(r['등록자'])}</span>
-      </div>
-    </div>
-  `).join('');
-}
-
-function renderContribution(rows) {
-  const el = document.getElementById('finance-contribution');
-  const incomeRows = rows.filter(r => r['구분'] === '수입');
-  const total = incomeRows.reduce((sum, r) => sum + Number(r['금액']), 0);
-
-  if (total === 0) {
-    el.innerHTML = '<p class="placeholder-note">아직 수입 내역이 없어서 기여도를 계산할 수 없어요.</p>';
-    return;
-  }
-
-  const byPerson = {};
-  incomeRows.forEach(r => {
-    byPerson[r['등록자']] = (byPerson[r['등록자']] || 0) + Number(r['금액']);
-  });
-
-  const sortedPeople = Object.entries(byPerson).sort((a, b) => b[1] - a[1]);
-
-  el.innerHTML = sortedPeople.map(([name, amount]) => {
-    const pct = ((amount / total) * 100).toFixed(1);
-    return `
-      <div class="contribution-row">
-        <div class="contribution-label">
-          <span>${escapeHtml(name)}</span>
-          <span class="contribution-pct">${pct}%</span>
-        </div>
-        <div class="contribution-bar-track">
-          <div class="contribution-bar-fill" style="width:${pct}%"></div>
-        </div>
-      </div>
-    `;
-  }).join('');
-}
-
-// ---------- 새 내역 등록 ----------
-
-function initFinanceForm() {
-  const form = document.getElementById('finance-form');
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const statusEl = document.getElementById('finance-form-status');
-    const submitBtn = form.querySelector('button[type="submit"]');
-
-    const payload = {
-      '날짜': form.date.value,
-      '구분': form.type.value,
-      '항목': form.item.value,
-      '금액': form.amount.value,
-      '등록자': (window.currentUserName || '알 수 없음'),
-      '메모': form.note.value
-    };
-
-    submitBtn.disabled = true;
-    statusEl.textContent = '등록 중...';
-
-    try {
-      const res = await fetch(FINANCE_API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain' }, // Apps Script CORS 우회용
-        body: JSON.stringify(payload)
-      });
-      const data = await res.json();
-      if (!data.ok) throw new Error(data.error || '등록 실패');
-
-      statusEl.textContent = '등록됐어요.';
-      form.reset();
-      await loadFinance();
-    } catch (err) {
-      statusEl.textContent = '등록 실패: ' + err.message;
-    } finally {
-      submitBtn.disabled = false;
-    }
+function sheetToObjects(sheet) {
+  const values = sheet.getDataRange().getValues();
+  const headers = values[0];
+  return values.slice(1).map(r => {
+    const obj = {};
+    headers.forEach((h, i) => { obj[h] = r[i]; });
+    return obj;
   });
 }
 
-// ---------- 유틸 ----------
-
-function formatWon(n) {
-  return Number(n).toLocaleString('ko-KR') + '원';
+function jsonOut(obj) {
+  return ContentService
+    .createTextOutput(JSON.stringify(obj))
+    .setMimeType(ContentService.MimeType.JSON);
 }
 
-function formatDate(d) {
-  const date = new Date(d);
-  if (isNaN(date)) return d;
-  return `${date.getMonth() + 1}.${date.getDate()}`;
-}
+/* =========================================================
+   [선택 사항] 매일 아침 가족에게 할 일/일정 요약 이메일 보내기
+   브라우저 알림은 앱을 열어둬야만 작동하는 한계가 있어서,
+   더 확실한 알림을 원하시면 이 함수를 아래처럼 등록해서 쓰세요.
 
-function escapeHtml(str) {
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
+   등록 방법: Apps Script 편집기 왼쪽 시계 아이콘(트리거) → 트리거 추가
+   → 실행할 함수: sendDailyDigest → 이벤트 소스: 시간 기반
+   → 매일 타이머 → 원하는 시간대(예: 오전 8~9시) 선택 → 저장
+   ========================================================= */
+function sendDailyDigest() {
+  const familyEmails = ['가족1@gmail.com', '가족2@gmail.com']; // 받을 사람 이메일로 교체하세요
+
+  const todosSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('회의할일');
+  const completionsSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('회의할일완료');
+  const todos = sheetToObjects(todosSheet);
+  const completions = sheetToObjects(completionsSheet).map(c => String(c['할일ID']));
+
+  const incomplete = todos.filter(t => !completions.includes(String(t['할일ID'])));
+
+  if (incomplete.length === 0) {
+    return; // 미완료 할일이 없으면 메일 안 보냄
+  }
+
+  const lines = incomplete.map(t => `- [${t['담당자']}] ${t['내용']} ${t['마감일'] ? '(마감: ' + t['마감일'] + ')' : ''}`);
+  const body = `오늘 기준 미완료 가족회의 할일입니다.\n\n${lines.join('\n')}`;
+
+  familyEmails.forEach(email => {
+    MailApp.sendEmail(email, '[우리집 다이어리] 오늘의 미완료 할일', body);
+  });
 }
