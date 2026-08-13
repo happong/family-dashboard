@@ -92,11 +92,62 @@
       </div>
     </section>
 
-    <!-- 계모임 (스켈레톤) -->
+    <!-- 계모임 -->
     <section id="view-finance" class="view" data-view="finance" hidden>
       <p class="view-eyebrow">가족 계모임</p>
       <h2 class="view-title">수입 · 지출 · 기여도</h2>
-      <p class="placeholder-note">이 화면은 다음 단계에서 실제로 채울 예정이에요.</p>
+      <p id="finance-status" class="finance-status"></p>
+
+      <div class="summary-grid finance-summary">
+        <article class="summary-card" data-accent="finance">
+          <p class="summary-label">총 수입</p>
+          <p id="finance-income" class="summary-value">-</p>
+        </article>
+        <article class="summary-card" data-accent="finance">
+          <p class="summary-label">총 지출</p>
+          <p id="finance-expense" class="summary-value">-</p>
+        </article>
+        <article class="summary-card" data-accent="finance">
+          <p class="summary-label">잔액</p>
+          <p id="finance-balance" class="summary-value">-</p>
+        </article>
+      </div>
+
+      <div class="finance-grid">
+        <div class="finance-main">
+          <h3 class="section-subtitle">거래 내역</h3>
+          <div id="finance-list" class="finance-list"></div>
+        </div>
+
+        <div class="finance-side">
+          <h3 class="section-subtitle">새 내역 등록</h3>
+          <form id="finance-form" class="finance-form">
+            <label>날짜
+              <input type="date" name="date" required />
+            </label>
+            <label>구분
+              <select name="type" required>
+                <option value="수입">수입</option>
+                <option value="지출">지출</option>
+              </select>
+            </label>
+            <label>항목
+              <input type="text" name="item" placeholder="예: 8월 회비" required />
+            </label>
+            <label>금액
+              <input type="number" name="amount" min="0" placeholder="0" required />
+            </label>
+            <label>메모
+              <input type="text" name="note" placeholder="선택사항" />
+            </label>
+            <button type="submit" class="btn-primary">등록</button>
+            <p id="finance-form-status" class="finance-status"></p>
+          </form>
+
+          <h3 class="section-subtitle">기여도 (누적 수입 기준)</h3>
+          <div id="finance-contribution" class="finance-contribution"></div>
+        </div>
+      </div>
     </section>
 
     <!-- 여행 (스켈레톤) -->
@@ -129,6 +180,7 @@
 
 <script src="config.js"></script>
 <script src="auth.js"></script>
+<script src="modules/finance.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
