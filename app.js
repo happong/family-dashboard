@@ -8,6 +8,11 @@
 const tabs = document.querySelectorAll('.tab');
 const views = document.querySelectorAll('.view');
 
+let financeLoadedOnce = false;
+let travelLoadedOnce = false;
+let meetingLoadedOnce = false;
+let alertsLoadedOnce = false;
+
 function goToView(viewName) {
   views.forEach(v => {
     v.hidden = v.dataset.view !== viewName;
@@ -20,6 +25,24 @@ function goToView(viewName) {
     }
   });
   window.location.hash = viewName;
+
+  // 각 탭 첫 진입 시에만 데이터 로드 (매번 다시 안 부름)
+  if (viewName === 'finance' && !financeLoadedOnce && typeof loadFinance === 'function') {
+    financeLoadedOnce = true;
+    loadFinance();
+  }
+  if (viewName === 'travel' && !travelLoadedOnce && typeof loadTrips === 'function') {
+    travelLoadedOnce = true;
+    loadTrips();
+  }
+  if (viewName === 'meeting' && !meetingLoadedOnce && typeof loadIssues === 'function') {
+    meetingLoadedOnce = true;
+    loadIssues();
+  }
+  if (viewName === 'alerts' && !alertsLoadedOnce && typeof initAlerts === 'function') {
+    alertsLoadedOnce = true;
+    initAlerts();
+  }
 }
 
 tabs.forEach(tab => {
@@ -35,4 +58,14 @@ window.addEventListener('hashchange', () => {
 window.addEventListener('DOMContentLoaded', () => {
   const initial = window.location.hash.replace('#', '') || 'home';
   goToView(initial);
+
+  if (typeof initFinanceForm === 'function') {
+    initFinanceForm();
+  }
+  if (typeof initTravelForms === 'function') {
+    initTravelForms();
+  }
+  if (typeof initMeetingForms === 'function') {
+    initMeetingForms();
+  }
 });
