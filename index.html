@@ -150,25 +150,273 @@
       </div>
     </section>
 
-    <!-- 여행 (스켈레톤) -->
+    <!-- 여행 -->
     <section id="view-travel" class="view" data-view="travel" hidden>
       <p class="view-eyebrow">가족 여행</p>
-      <h2 class="view-title">계획 · 기록 · 평점</h2>
-      <p class="placeholder-note">이 화면은 다음 단계에서 실제로 채울 예정이에요.</p>
+      <h2 class="view-title">사전계획 · 실제일정</h2>
+      <p id="travel-status" class="finance-status"></p>
+
+      <div class="travel-grid">
+        <div class="travel-side">
+          <h3 class="section-subtitle">여행 목록</h3>
+          <div id="trip-list" class="trip-list"></div>
+
+          <h3 class="section-subtitle">새 여행 등록</h3>
+          <form id="trip-form" class="finance-form">
+            <label>여행지
+              <input type="text" name="destination" placeholder="예: 제주도" required />
+            </label>
+            <label>시작일
+              <input type="date" name="startDate" required />
+            </label>
+            <label>종료일
+              <input type="date" name="endDate" required />
+            </label>
+            <label>상태
+              <select name="status">
+                <option value="계획중">계획중</option>
+                <option value="완료">완료</option>
+              </select>
+            </label>
+            <label>메모
+              <input type="text" name="note" placeholder="선택사항" />
+            </label>
+            <button type="submit" class="btn-primary">여행 등록</button>
+            <p id="trip-form-status" class="finance-status"></p>
+          </form>
+        </div>
+
+        <div class="travel-main">
+          <p id="itinerary-empty" class="placeholder-note">왼쪽에서 여행을 선택하면 일정이 여기 표시돼요.</p>
+
+          <div id="itinerary-panel" hidden>
+            <h3 class="section-subtitle" id="itinerary-trip-name"></h3>
+            <p id="itinerary-status" class="finance-status"></p>
+
+            <div class="itinerary-columns">
+              <div>
+                <h4 class="itinerary-col-title" data-kind="사전계획">사전계획</h4>
+                <div id="itinerary-plan-list" class="itinerary-list"></div>
+              </div>
+              <div>
+                <h4 class="itinerary-col-title" data-kind="실제일정">실제일정</h4>
+                <div id="itinerary-actual-list" class="itinerary-list"></div>
+              </div>
+            </div>
+
+            <h3 class="section-subtitle">일정 추가</h3>
+            <form id="itinerary-form" class="finance-form itinerary-form">
+              <label>구분
+                <select name="kind" required>
+                  <option value="사전계획">사전계획</option>
+                  <option value="실제일정">실제일정</option>
+                </select>
+              </label>
+              <label>날짜
+                <input type="date" name="date" required />
+              </label>
+              <label>시간
+                <input type="time" name="time" />
+              </label>
+              <label>장소 / 활동
+                <input type="text" name="place" placeholder="예: 성산일출봉" required />
+              </label>
+              <label>메모
+                <input type="text" name="note" placeholder="선택사항" />
+              </label>
+              <button type="submit" class="btn-primary">일정 추가</button>
+              <p id="itinerary-form-status" class="finance-status"></p>
+            </form>
+
+            <hr class="divider" />
+
+            <h3 class="section-subtitle">여행지 별점</h3>
+            <p id="trip-rating-summary" class="trip-rating-summary"></p>
+            <form id="trip-rating-form" class="finance-form itinerary-form">
+              <label>별점 (1~5)
+                <select name="rating" required>
+                  <option value="5">★★★★★ (5)</option>
+                  <option value="4">★★★★☆ (4)</option>
+                  <option value="3">★★★☆☆ (3)</option>
+                  <option value="2">★★☆☆☆ (2)</option>
+                  <option value="1">★☆☆☆☆ (1)</option>
+                </select>
+              </label>
+              <label>한줄평
+                <input type="text" name="note" placeholder="선택사항" />
+              </label>
+              <button type="submit" class="btn-primary">별점 등록</button>
+              <p id="trip-rating-form-status" class="finance-status"></p>
+            </form>
+
+            <hr class="divider" />
+
+            <h3 class="section-subtitle">방문 맛집</h3>
+            <p id="restaurant-status" class="finance-status"></p>
+            <div id="restaurant-list" class="restaurant-list"></div>
+            <form id="restaurant-form" class="finance-form">
+              <label>상점명
+                <input type="text" name="shopName" placeholder="예: 흑돼지 맛집" required />
+              </label>
+              <label>메뉴
+                <input type="text" name="menu" placeholder="예: 흑돼지 구이" />
+              </label>
+              <label>별점 (1~5)
+                <select name="rating" required>
+                  <option value="5">5</option>
+                  <option value="4">4</option>
+                  <option value="3">3</option>
+                  <option value="2">2</option>
+                  <option value="1">1</option>
+                </select>
+              </label>
+              <label>재방문 의사
+                <select name="revisit" required>
+                  <option value="예">예</option>
+                  <option value="아니오">아니오</option>
+                </select>
+              </label>
+              <label>메모
+                <input type="text" name="note" placeholder="선택사항" />
+              </label>
+              <button type="submit" class="btn-primary">맛집 등록</button>
+              <p id="restaurant-form-status" class="finance-status"></p>
+            </form>
+
+            <hr class="divider" />
+
+            <h3 class="section-subtitle">
+              사진 / 동영상
+              <span id="photo-count" class="photo-count">0/10</span>
+            </h3>
+            <p class="placeholder-note photo-hint">5~10개 정도만 추려서 등록하는 걸 추천해요. 파일 자체가 아니라 Google Drive 공유 링크를 등록합니다.</p>
+            <p id="photo-status" class="finance-status"></p>
+            <div id="photo-grid" class="photo-grid"></div>
+            <form id="photo-form" class="finance-form">
+              <label>Google Drive 공유 링크
+                <input type="url" name="url" placeholder="https://drive.google.com/..." required />
+              </label>
+              <label>설명
+                <input type="text" name="desc" placeholder="예: 성산일출봉 일출" />
+              </label>
+              <label>유형
+                <select name="kind">
+                  <option value="사진">사진</option>
+                  <option value="동영상">동영상</option>
+                </select>
+              </label>
+              <button type="submit" class="btn-primary">추가</button>
+              <p id="photo-form-status" class="finance-status"></p>
+            </form>
+          </div>
+        </div>
+      </div>
     </section>
 
-    <!-- 가족회의 (스켈레톤) -->
+    <!-- 가족회의 -->
     <section id="view-meeting" class="view" data-view="meeting" hidden>
       <p class="view-eyebrow">가족 회의</p>
       <h2 class="view-title">문제 · 논의 · 진행도</h2>
-      <p class="placeholder-note">이 화면은 다음 단계에서 실제로 채울 예정이에요.</p>
+      <p id="meeting-status" class="finance-status"></p>
+
+      <div class="meeting-grid">
+        <div class="meeting-side">
+          <h3 class="section-subtitle">안건 목록</h3>
+          <div id="issue-list" class="issue-list"></div>
+
+          <h3 class="section-subtitle">새 안건 등록</h3>
+          <form id="issue-form" class="finance-form">
+            <label>제목
+              <input type="text" name="title" placeholder="예: 명절 방문 순서 조율" required />
+            </label>
+            <label>설명
+              <input type="text" name="desc" placeholder="선택사항" />
+            </label>
+            <button type="submit" class="btn-primary">안건 등록</button>
+            <p id="issue-form-status" class="finance-status"></p>
+          </form>
+
+          <h3 class="section-subtitle">전체 기여도 (완료한 할 일 기준)</h3>
+          <div id="meeting-contribution" class="finance-contribution"></div>
+        </div>
+
+        <div class="meeting-main">
+          <p id="issue-empty" class="placeholder-note">왼쪽에서 안건을 선택하면 상세 내용이 여기 표시돼요.</p>
+
+          <div id="issue-panel" hidden>
+            <h3 class="section-subtitle" id="issue-panel-title"></h3>
+
+            <h4 class="itinerary-col-title">진행도 기록</h4>
+            <div id="progress-history" class="progress-history"></div>
+            <form id="progress-form" class="finance-form itinerary-form">
+              <label>새 진행도 (0~100)
+                <input type="number" name="value_" min="0" max="100" required />
+              </label>
+              <label>메모
+                <input type="text" name="note" placeholder="선택사항" />
+              </label>
+              <button type="submit" class="btn-primary">진행도 기록</button>
+              <p id="progress-form-status" class="finance-status"></p>
+            </form>
+
+            <hr class="divider" />
+
+            <h4 class="itinerary-col-title">논의 기록</h4>
+            <p id="discussion-status" class="finance-status"></p>
+            <div id="discussion-list" class="discussion-list"></div>
+            <form id="discussion-form" class="finance-form itinerary-form">
+              <label>날짜
+                <input type="date" name="date" required />
+              </label>
+              <label>논의 내용
+                <input type="text" name="content" placeholder="오늘 논의한 내용" required />
+              </label>
+              <label>다음 아젠다
+                <input type="text" name="nextAgenda" placeholder="다음에 이어서 논의할 내용" />
+              </label>
+              <button type="submit" class="btn-primary">논의 기록 추가</button>
+              <p id="discussion-form-status" class="finance-status"></p>
+            </form>
+
+            <hr class="divider" />
+
+            <h4 class="itinerary-col-title">담당 할 일</h4>
+            <div id="todo-list" class="todo-list"></div>
+            <form id="todo-form" class="finance-form itinerary-form">
+              <label>담당자
+                <input type="text" name="assignee" placeholder="예: 엄마" required />
+              </label>
+              <label>할 일
+                <input type="text" name="content" placeholder="예: 숙소 예약하기" required />
+              </label>
+              <label>마감일
+                <input type="date" name="due" />
+              </label>
+              <button type="submit" class="btn-primary">할 일 등록</button>
+              <p id="todo-form-status" class="finance-status"></p>
+            </form>
+          </div>
+        </div>
+      </div>
     </section>
 
-    <!-- 알림 (스켈레톤) -->
+    <!-- 알림 -->
     <section id="view-alerts" class="view" data-view="alerts" hidden>
       <p class="view-eyebrow">알림 설정</p>
       <h2 class="view-title">할 일 · 일정 알림</h2>
-      <p class="placeholder-note">이 화면은 다음 단계에서 실제로 채울 예정이에요.</p>
+
+      <p class="placeholder-note">
+        브라우저 알림은 이 사이트 탭을 열어두고 있을 때만 울려요. 앱을 꺼두면 알림이 오지 않습니다.
+        더 확실한 알림이 필요하면 <code>backend/Code.gs</code>의 <code>sendDailyDigest()</code>를
+        Apps Script 트리거로 등록해서 매일 이메일로 받는 방법을 README에 안내해뒀어요.
+      </p>
+
+      <button id="notif-toggle-btn" class="btn-primary notif-toggle-btn">알림 켜기</button>
+      <p id="notif-toggle-status" class="finance-status"></p>
+
+      <h3 class="section-subtitle">앞으로 7일 안에 예정된 일정 / 마감</h3>
+      <p id="upcoming-status" class="finance-status"></p>
+      <div id="upcoming-list" class="upcoming-list"></div>
     </section>
 
   </main>
@@ -181,6 +429,9 @@
 <script src="config.js"></script>
 <script src="auth.js"></script>
 <script src="modules/finance.js"></script>
+<script src="modules/travel.js"></script>
+<script src="modules/meeting.js"></script>
+<script src="modules/alerts.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
