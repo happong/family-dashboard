@@ -8,6 +8,8 @@
    ========================================================= */
 
 // ⚠️ 여기에 본인의 Apps Script 웹 앱 URL을 붙여넣으세요.
+// (백엔드가 여러 모듈을 하나로 관리하는 범용 버전으로 바뀌어서,
+//  요청마다 ?type=finance 를 붙여줍니다.)
 const FINANCE_API_URL = 'YOUR_APPS_SCRIPT_WEB_APP_URL';
 
 let financeRows = [];
@@ -23,7 +25,7 @@ async function loadFinance() {
   }
 
   try {
-    const res = await fetch(FINANCE_API_URL);
+    const res = await fetch(`${FINANCE_API_URL}?type=finance`);
     const data = await res.json();
     if (!data.ok) throw new Error(data.error || '불러오기 실패');
 
@@ -114,6 +116,7 @@ function initFinanceForm() {
     const submitBtn = form.querySelector('button[type="submit"]');
 
     const payload = {
+      type: 'finance',
       '날짜': form.date.value,
       '구분': form.type.value,
       '항목': form.item.value,
