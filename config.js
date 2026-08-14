@@ -11,6 +11,7 @@ const firebaseConfig = {
 // 접속을 허용할 가족 구성원의 Google 계정 이메일
 const ALLOWED_EMAILS = [
    "eun1009sin@gmail.com",
+  "hoph5201@gmail.com",
   // "example1@gmail.com",
   // "example2@gmail.com",
 ];
